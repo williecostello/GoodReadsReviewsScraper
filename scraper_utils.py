@@ -3,7 +3,7 @@ from datetime import datetime
 import numpy as np
 import time
 
-from scrape_settings import zzz
+from scraper_settings import zzz
 
 
 # Function to load a book's URL
@@ -79,6 +79,9 @@ def select_stars(browser, n):
 
 # Function to list all reviews on a given page
 def list_reviews(browser):
+
+    # Wait to allow page of reviews to load
+    time.sleep(zzz)
 
     # Download & Soupify webpage
     r = browser.page_source

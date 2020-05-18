@@ -3,9 +3,9 @@ import pandas as pd
 from selenium import webdriver
 import time
 
-from scrape_utils import go_to_page, scrape_book_info, select_stars, \
+from scraper_utils import go_to_page, scrape_book_info, select_stars, \
     list_reviews, scrape_review
-from scrape_settings import chrome_path, book_urls, output_dir, output_name, zzz
+from scraper_settings import chrome_path, book_urls, output_dir, output_name
 
 
 # Initialize dataframe to store review data
@@ -59,9 +59,6 @@ for book_url in book_urls:
                 next_page.click()
             else:
                 break
-
-            # Wait to allow next page of reviews to load
-            time.sleep(zzz)
 
 
 # Rename columns of reviews dataframe

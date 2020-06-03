@@ -67,8 +67,7 @@ reviews_df.columns = ['book_id', 'book_title', 'book_author',
 
 
 # Check that output directory exists; if not, create it
-check_dir = os.path.isdir(output_dir)
-if not check_dir:
+if not os.path.isdir(output_dir):
     os.makedirs(output_dir)
 
 

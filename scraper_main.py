@@ -72,4 +72,4 @@ if not os.path.isdir(output_dir):
 
 
 # Write reviews dataframe to csv
-reviews_df.to_csv(f'{output_dir}{output_name}.csv')
+reviews_df.to_csv(f'{output_dir}{output_name}.csv', index=False)

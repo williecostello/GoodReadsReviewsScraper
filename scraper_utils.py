@@ -115,12 +115,14 @@ def scrape_review(review):
     
     # Find review text
     text = review.find('div', class_='reviewText stacked').text
+
+    # Optional text cleaning
     # Chop off '\n...more\n' string which ends most reviews
-    if text[-11:-1] == '\n...more\n':
-        text = text[0:-10]
+    # if text[-11:-1] == '\n...more\n':
+        # text = text[0:-10]
     # Replace '\n's with whitespace 
-    text = text.replace('\n', ' ')
-    text = text.strip()
+    # text = text.replace('\n', ' ')
+    # text = text.strip()
 
     # Find review date
     date_text = review.find('a', class_='reviewDate createdAt right').text

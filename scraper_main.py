@@ -4,7 +4,7 @@ from selenium import webdriver
 
 from scraper_utils import go_to_page, scrape_book_info, select_stars, \
     list_reviews, scrape_review
-from scraper_settings import chrome_path, book_urls, output_dir, output_name
+from scraper_settings import chrome_path, book_urls, output_dir
 
 
 # Check that output directory exists; if not, create it
@@ -12,14 +12,15 @@ if not os.path.isdir(output_dir):
     os.makedirs(output_dir)
 
 
-# Initialize dataframe to store review data
-reviews_df = pd.DataFrame()
 # Initialize browser
 browser = webdriver.Chrome(chrome_path)
 
 
 # Loop through each book in list
 for book_url in book_urls:
+
+    # Initialize dataframe to store review data
+    reviews_df = pd.DataFrame()
 
     # Go to book's URL
     go_to_page(browser, book_url)
@@ -64,11 +65,12 @@ for book_url in book_urls:
             else:
                 break
 
+    # Rename columns of reviews dataframe
+    reviews_df.columns = ['book_id', 'book_title', 'book_author',
+                          'reviewer_id', 'rating', 'review', 'date']
 
-# Rename columns of reviews dataframe
-reviews_df.columns = ['book_id', 'book_title', 'book_author',
-                      'reviewer_id', 'rating', 'review', 'date']
+    # Create unique file name from book ID and title
+    file_name = f"{book_id}_{book_title.lower().replace(' ', '_')}"
 
-
-# Write reviews dataframe to csv
-reviews_df.to_csv(f'{output_dir}{output_name}.csv', index=False)
+    # Write reviews dataframe to csv
+    reviews_df.to_csv(f'{output_dir}{file_name}.csv', index=False)

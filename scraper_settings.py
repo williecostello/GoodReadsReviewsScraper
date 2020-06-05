@@ -7,9 +7,7 @@ book_urls = ['https://www.goodreads.com/book/show/223380',
              'https://www.goodreads.com/book/show/41160292']
 
 # Set output directory (include final forward slash!)
-output_dir = 'data/raw/'
-# Set output name ('.csv' will be automatically appended)
-output_name = 'reviews_ted_chiang'
+output_dir = 'data/'
 
 # Set amount of time to sleep between browser actions (4 seconds is recommended)
 zzz = 4

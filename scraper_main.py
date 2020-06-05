@@ -1,7 +1,6 @@
 import os
 import pandas as pd
 from selenium import webdriver
-import time
 
 from scraper_utils import go_to_page, scrape_book_info, select_stars, \
     list_reviews, scrape_review

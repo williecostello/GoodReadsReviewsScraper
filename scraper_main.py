@@ -8,6 +8,11 @@ from scraper_utils import go_to_page, scrape_book_info, select_stars, \
 from scraper_settings import chrome_path, book_urls, output_dir, output_name
 
 
+# Check that output directory exists; if not, create it
+if not os.path.isdir(output_dir):
+    os.makedirs(output_dir)
+
+
 # Initialize dataframe to store review data
 reviews_df = pd.DataFrame()
 # Initialize browser
@@ -64,11 +69,6 @@ for book_url in book_urls:
 # Rename columns of reviews dataframe
 reviews_df.columns = ['book_id', 'book_title', 'book_author',
                       'reviewer_id', 'rating', 'review', 'date']
-
-
-# Check that output directory exists; if not, create it
-if not os.path.isdir(output_dir):
-    os.makedirs(output_dir)
 
 
 # Write reviews dataframe to csv

@@ -70,7 +70,8 @@ for book_url in book_urls:
                           'reviewer_id', 'rating', 'review', 'date']
 
     # Create unique file name from book ID and title
-    file_name = f"{book_id}_{book_title.lower().replace(' ', '_')}"
+    book_name = book_title.lower().replace(':', '').replace('//', '-').replace(' ', '_')
+    file_name = f"{book_id}_{book_name}"
 
     # Write reviews dataframe to csv
     reviews_df.to_csv(f'{output_dir}{file_name}.csv', index=False)

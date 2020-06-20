@@ -7,6 +7,10 @@ from scraper_utils import go_to_page, scrape_book_info, select_stars, \
 from scraper_settings import chrome_path, book_urls, output_dir
 
 
+# Set whether to scrape just the top 300 reviews or 300 reviews from each rating
+top_reviews = True
+
+
 # Check that output directory exists; if not, create it
 if not os.path.isdir(output_dir):
     os.makedirs(output_dir)
@@ -28,11 +32,15 @@ for book_url in book_urls:
     # Scrape the book's essential info
     book_id, book_title, book_author = scrape_book_info(browser, book_url)
 
-    # Loop through 5-star to 1-star review filters
-    for i in range(1, 6):
+    # Set whether to loop through review star filters
+    num_loops = (1 if top_reviews else 5)
+
+    # Loop through 5-star to 1-star review filters, if selected
+    for i in range(num_loops):
 
         # Select the review filter
-        select_stars(browser, i)
+        if not top_reviews:
+            select_stars(browser, i+1)
 
         # Loop through the first 10 pages of reviews
         for j in range(10):

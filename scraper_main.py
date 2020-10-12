@@ -63,6 +63,7 @@ for book_url in book_urls:
 
             # Check to see if at the last page of reviews
             # If not, move on to the next page of reviews
+            browser.execute_script('window.scrollTo(0, 0);')
             try:
                 browser.find_element_by_class_name('next_page')
             except:

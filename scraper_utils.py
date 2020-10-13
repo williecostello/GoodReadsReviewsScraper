@@ -114,15 +114,8 @@ def scrape_review(review):
         rating = np.nan
     
     # Find review text
-    text = review.find('div', class_='reviewText stacked').text
-
-    # Optional text cleaning
-    # Chop off '\n...more\n' string which ends most reviews
-    # if text[-11:-1] == '\n...more\n':
-        # text = text[0:-10]
-    # Replace '\n's with whitespace 
-    # text = text.replace('\n', ' ')
-    # text = text.strip()
+    text_block = review.find('div', class_='reviewText stacked')
+    text = text_block.find_all('span')[-1].get_text(' ', strip=True)
 
     # Find review date
     date_text = review.find('a', class_='reviewDate createdAt right').text

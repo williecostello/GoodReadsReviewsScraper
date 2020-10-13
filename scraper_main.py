@@ -29,6 +29,8 @@ browser = webdriver.Chrome(chrome_path)
 # Loop through each book in list
 for book_url in book_urls:
 
+    print(f'Starting scraping of {book_url}')
+
     # Initialize dataframe to store review data
     reviews_df = pd.DataFrame()
 
@@ -73,11 +75,13 @@ for book_url in book_urls:
             try:
                 browser.find_element_by_class_name('next_page')
             except:
+                print(f'Successfully scraped {j+1} pages of reviews')
                 break
             next_page = browser.find_element_by_class_name('next_page')
             if next_page.get_attribute('class') != 'next_page disabled':
                 next_page.click()
             else:
+                print(f'Successfully scraped {j+1} pages of reviews')
                 break
 
     # Rename columns of reviews dataframe
@@ -90,3 +94,5 @@ for book_url in book_urls:
 
     # Write reviews dataframe to csv
     reviews_df.to_csv(f'{output_dir}{file_name}.csv', index=False)
+
+    print(f'Finished scraping of {book_title}!')

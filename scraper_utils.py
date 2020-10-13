@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 from datetime import datetime
 import numpy as np
+import re
 import time
 
 from scraper_settings import zzz
@@ -43,7 +44,15 @@ def scrape_review(review):
     
     # Find review text
     text_block = review.find('div', class_='reviewText stacked')
-    text = text_block.find_all('span')[-1].get_text(' ', strip=True)
+    text = text_block.find('span').get_text(' ', strip=True)
+
+    # Clean up review text
+    # Remove ' ...more' string that ends many reviews
+    text = re.sub(r' ...more$', '', text)
+    # Remove hyperlinks
+    text = re.sub(r'http\S+', '', text)
+    # Strip whitespaces
+    text = text.strip()
 
     # Find review date
     date_text = review.find('a', class_='reviewDate createdAt right').text

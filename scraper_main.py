@@ -1,3 +1,4 @@
+import argparse
 import os
 import pandas as pd
 from selenium import webdriver
@@ -7,8 +8,13 @@ from scraper_utils import go_to_page, scrape_book_info, select_stars, \
 from scraper_settings import chrome_path, book_urls, output_dir
 
 
+# Set script arguments
+parser = argparse.ArgumentParser()
+parser.add_argument('-a', '--allstars', action='store_true', help='Scrape 300 reviews from each star rating; otherwise, scrape just the top 300 reviews')
+args = parser.parse_args()
+
 # Set whether to scrape just the top 300 reviews or 300 reviews from each rating
-top_reviews = True
+all_stars = args.allstars
 
 
 # Check that output directory exists; if not, create it
@@ -33,13 +39,13 @@ for book_url in book_urls:
     book_id, book_title, book_author = scrape_book_info(browser, book_url)
 
     # Set whether to loop through review star filters
-    num_loops = (1 if top_reviews else 5)
+    num_loops = (5 if all_stars else 1)
 
     # Loop through 5-star to 1-star review filters, if selected
     for i in range(num_loops):
 
         # Select the review filter
-        if not top_reviews:
+        if all_stars:
             select_stars(browser, i+1)
 
         # Loop through the first 10 pages of reviews

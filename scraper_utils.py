@@ -6,6 +6,53 @@ import time
 from scraper_settings import zzz
 
 
+# Function to scrape a book's essential info (ID, title, author)
+def scrape_book_info(browser, book_url):
+
+    # Download & Soupify webpage
+    r = browser.page_source
+    soup = BeautifulSoup(r, features = 'html.parser')
+    
+    # Find book ID, title, and author
+    book_id = book_url.split('/')[-1].split('-')[0]
+    book_title = soup.find(id = 'bookTitle').text.replace('\n', '').strip()
+    book_author = soup.find('a', class_='authorName').text
+    
+    return book_id, book_title, book_author
+
+
+# Function to scrape a review's essential info (reviewer ID, text, rating, date)
+def scrape_review(review):
+
+    # Find reviewer's URL
+    reviewer_url = review.find('a', class_='user').get('href')
+    # Isolate reviewer ID, between the final '/' and following '-' in the URL
+    reviewer_id = reviewer_url.split('/')[-1]
+    reviewer_id = reviewer_id.split('-')[0]
+
+    # Create dictionary to translate rating description to number
+    rating_dict = {'did not like it': 1, 'it was ok': 2, 'liked it': 3,
+                   'really liked it': 4, 'it was amazing': 5}
+    # Find review rating & convert rating description to number
+    try:
+        rating_text = review.find('span', class_='staticStars notranslate').text
+        rating = rating_dict[rating_text]
+    # If no rating given, encode as 'NaN'
+    except:
+        rating = np.nan
+    
+    # Find review text
+    text_block = review.find('div', class_='reviewText stacked')
+    text = text_block.find_all('span')[-1].get_text(' ', strip=True)
+
+    # Find review date
+    date_text = review.find('a', class_='reviewDate createdAt right').text
+    # Convert date to datetime
+    date = datetime.strptime(date_text, '%b %d, %Y')
+
+    return reviewer_id, rating, text, date
+
+
 # Function to load a book's URL
 def go_to_page(browser, book_url):
     browser.get(book_url)
@@ -23,19 +70,20 @@ def close_pop_up(browser):
         pass
 
 
-# Function to scrape a book's essential info (ID, title, author)
-def scrape_book_info(browser, book_url):
+# Function to list all reviews on a given page
+def list_reviews(browser):
+
+    # Wait to allow page of reviews to load
+    time.sleep(zzz)
 
     # Download & Soupify webpage
     r = browser.page_source
     soup = BeautifulSoup(r, features = 'html.parser')
+
+    # Create list of all reviews on webpage (there should be 30)
+    reviews = soup.find_all('div', class_='friendReviews elementListBrown')
     
-    # Find book ID, title, and author
-    book_id = book_url.split('/')[-1].split('-')[0]
-    book_title = soup.find(id = 'bookTitle').text.replace('\n', '').strip()
-    book_author = soup.find('a', class_='authorName').text
-    
-    return book_id, book_title, book_author
+    return reviews
 
 
 # Function to select n-stars review filter
@@ -75,51 +123,3 @@ def select_stars(browser, n):
     except:
         pass
     time.sleep(zzz)
-
-
-# Function to list all reviews on a given page
-def list_reviews(browser):
-
-    # Wait to allow page of reviews to load
-    time.sleep(zzz)
-
-    # Download & Soupify webpage
-    r = browser.page_source
-    soup = BeautifulSoup(r, features = 'html.parser')
-
-    # Create list of all reviews on webpage (there should be 30)
-    reviews = soup.find_all('div', class_='friendReviews elementListBrown')
-    
-    return reviews
-
-
-# Function to scrape a review's essential info (reviewer ID, text, rating, date)
-def scrape_review(review):
-
-    # Find reviewer's URL
-    reviewer_url = review.find('a', class_='user').get('href')
-    # Isolate reviewer ID, between the final '/' and following '-' in the URL
-    reviewer_id = reviewer_url.split('/')[-1]
-    reviewer_id = reviewer_id.split('-')[0]
-
-    # Create dictionary to translate rating description to number
-    rating_dict = {'did not like it': 1, 'it was ok': 2, 'liked it': 3,
-                   'really liked it': 4, 'it was amazing': 5}
-    # Find review rating & convert rating description to number
-    try:
-        rating_text = review.find('span', class_='staticStars notranslate').text
-        rating = rating_dict[rating_text]
-    # If no rating given, encode as 'NaN'
-    except:
-        rating = np.nan
-    
-    # Find review text
-    text_block = review.find('div', class_='reviewText stacked')
-    text = text_block.find_all('span')[-1].get_text(' ', strip=True)
-
-    # Find review date
-    date_text = review.find('a', class_='reviewDate createdAt right').text
-    # Convert date to datetime
-    date = datetime.strptime(date_text, '%b %d, %Y')
-
-    return reviewer_id, rating, text, date

@@ -44,15 +44,14 @@ def scrape_review(review):
     
     # Find review text
     text_block = review.find('div', class_='reviewText stacked')
-    text = text_block.find('span').get_text(' ', strip=True)
+    try:
+        text = text_block.find('span', style='display:none').get_text(' ', strip=True)
+    except:
+        text = text_block.get_text(' ', strip=True)
 
-    # Clean up review text
-    # Remove ' ...more' string that ends many reviews
-    text = re.sub(r' ...more$', '', text)
-    # Remove hyperlinks
-    text = re.sub(r'http\S+', '', text)
-    # Strip whitespaces
-    text = text.strip()
+    # Remove spoiler tags from review text
+    text = re.sub(r'\(view spoiler\) \[', '', text)
+    text = re.sub(r'\(hide spoiler\) \] ', '', text)
 
     # Find review date
     date_text = review.find('a', class_='reviewDate createdAt right').text
